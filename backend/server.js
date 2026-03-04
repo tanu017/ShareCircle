@@ -1,16 +1,17 @@
 const express = require("express");
 const cors = require("cors");
+const connectDB = require("./config/db");
 require("dotenv").config();
 
 const app = express();
 
-// Middleware
+connectDB();
+
 app.use(cors());
 app.use(express.json());
 
-// Test route
 app.get("/", (req, res) => {
-  res.send("ShareCircle API is running");
+  res.send("ShareCircle API running");
 });
 
 const PORT = process.env.PORT || 5000;
