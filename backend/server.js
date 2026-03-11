@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const cors = require("cors");  
 
 const authRoutes = require("./routes/authRoutes");
 const requestRoutes = require("./routes/requestRoutes");
@@ -13,8 +14,10 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 dotenv.config();
-
 const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 // Middleware
 app.use(express.json());
