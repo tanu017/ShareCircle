@@ -20,6 +20,14 @@ app.get("/", (req, res) => {
   res.send("ShareCircle API running");
 });
 
+const requestRoutes = require("./routes/requestRoutes");
+
+app.use("/api/requests", requestRoutes);
+
+const helpRoutes = require("./routes/helpRoutes");
+
+app.use("/api/help", helpRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
