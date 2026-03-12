@@ -17,10 +17,17 @@ exports.helpRequest = async (req, res) => {
       return res.status(403).json({ message: "You cannot help your own request" });
     }
 
-    // Check if ANY connection already exists for this request
-    // All participants for the same request should use the same connection
-    const existingConnection = await HelpConnection.findOne({
+    // Check if ANY valid connection already exists for this request
+    // Valid connection = volunteer !== ngo
+    const allConnections = await HelpConnection.find({
       request: requestId
+    });
+
+    const existingConnection = allConnections.find(conn => {
+      const volunteerId = conn.volunteer.toString();
+      const ngoId = conn.ngo.toString();
+      // Only return valid connections (where volunteer !== ngo)
+      return volunteerId !== ngoId;
     });
 
     if (existingConnection) {
@@ -57,7 +64,21 @@ exports.getMyConnections = async (req, res) => {
       ]
     }).populate("request");
 
-    res.json(connections);
+    // Filter out invalid connections where user is chatting with themselves
+    // (volunteer and ngo are the same person)
+    const validConnections = connections.filter(conn => {
+      const volunteerId = conn.volunteer.toString();
+      const ngoId = conn.ngo.toString();
+
+      // Exclude if volunteer and ngo are the same person
+      if (volunteerId === ngoId) {
+        return false;
+      }
+
+      return true;
+    });
+
+    res.json(validConnections);
 
   } catch (error) {
     res.status(500).json({ message: error.message });
