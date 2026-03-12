@@ -80,18 +80,28 @@ function Chat({ connectionId, userId }) {
 
     // Define the message handler (no extra dependencies)
     const handleReceiveMessage = (data) => {
+      console.log("Received socket message:", data);
+      console.log("Current connectionId:", connectionId);
+      console.log("data.connection:", data.connection);
+
       // Only accept messages for the current connectionId
-      if (data.connectionId !== connectionId) {
+      // data.connection is the MongoDB ObjectId, connectionId might be string
+      if (data.connection?.toString?.() !== connectionId?.toString?.() && data.connection !== connectionId) {
+        console.log("Message filtered out - connection mismatch");
         return;
       }
+
+      console.log("Message accepted, adding to state");
 
       // Add message to state
       // Check for duplicates by looking at current messages array
       setMessages((prevMessages) => {
         const messageExists = prevMessages.some(msg => msg._id === data._id);
         if (messageExists) {
+          console.log("Message already exists, skipping");
           return prevMessages;
         }
+        console.log("Adding new message to state");
         return [...prevMessages, data];
       });
     };

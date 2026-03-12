@@ -15,3 +15,25 @@ exports.getMessages = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.createMessage = async (req, res) => {
+  try {
+    const { connection, sender, message } = req.body;
+
+    if (!connection || !sender || !message) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const newMessage = new Message({
+      connection,
+      sender,
+      message
+    });
+
+    await newMessage.save();
+    res.status(201).json(newMessage);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

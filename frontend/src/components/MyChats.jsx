@@ -13,28 +13,7 @@ function MyChats({ setConnectionId }) {
     })
       .then(res => res.json())
       .then(data => {
-        // Remove duplicate connections by request ID, keeping the most recent
-        const uniqueChats = data.reduce((acc, chat) => {
-          const requestId = chat.request._id;
-          const existingIndex = acc.findIndex(c => c.request._id === requestId);
-
-          if (existingIndex === -1) {
-            // First occurrence of this request
-            acc.push(chat);
-          } else {
-            // Keep the most recent connection for this request
-            const existing = acc[existingIndex];
-            const existingDate = new Date(existing.createdAt || 0);
-            const currentDate = new Date(chat.createdAt || 0);
-            if (currentDate > existingDate) {
-              acc[existingIndex] = chat;
-            }
-          }
-
-          return acc;
-        }, []);
-
-        setChats(uniqueChats);
+        setChats(data);
       });
 
   }, []);

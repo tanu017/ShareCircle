@@ -12,15 +12,20 @@ exports.helpRequest = async (req, res) => {
       return res.status(404).json({ message: "Request not found" });
     }
 
-    // Prevent duplicate help requests
+    // Prevent users from helping their own request
+    if (request.createdBy.toString() === req.user._id.toString()) {
+      return res.status(403).json({ message: "You cannot help your own request" });
+    }
+
+    // Check if ANY connection already exists for this request
+    // All participants for the same request should use the same connection
     const existingConnection = await HelpConnection.findOne({
-      request: requestId,
-      volunteer: req.user._id
+      request: requestId
     });
 
     if (existingConnection) {
       return res.status(200).json({
-        message: "You are already helping this request",
+        message: "Using existing help connection for this request",
         connection: existingConnection
       });
     }

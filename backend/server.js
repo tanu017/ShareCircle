@@ -31,6 +31,11 @@ app.use("/api/requests", requestRoutes);
 app.use("/api/help", helpRoutes);
 app.use("/api/chat", chatRoutes);
 
+// Message creation endpoint
+const authMiddleware = require("./middleware/authMiddleware");
+const { createMessage } = require("./controllers/chatController");
+app.post("/api/messages", authMiddleware, createMessage);
+
 app.get("/", (req, res) => {
   res.send("ShareCircle API running");
 });
@@ -52,23 +57,20 @@ io.on("connection", (socket) => {
 
   // Join chat room
   socket.on("join_chat", (connectionId) => {
+    console.log(`Socket ${socket.id} joining room: ${connectionId}`);
     socket.join(connectionId);
+    console.log(`Rooms for socket ${socket.id}:`, socket.rooms);
   });
 
   // Send message
-  socket.on("send_message", async (data) => {
+  socket.on("send_message", (data) => {
     try {
-
-      const newMessage = new Message({
-        connection: data.connectionId,
-        sender: data.senderId,
-        message: data.message
-      });
-
-      await newMessage.save();
-
-      io.to(data.connectionId).emit("receive_message", newMessage);
-
+      const roomName = data.connection.toString();
+      console.log(`Broadcasting to room: ${roomName}`, data);
+      console.log(`Sockets in room: ${io.sockets.adapter.rooms.get(roomName)?.size || 0}`);
+      // Broadcast the message to all users in the chat room
+      // data already comes as a saved message from the API
+      io.to(roomName).emit("receive_message", data);
     } catch (error) {
       console.error("Message error:", error);
     }
