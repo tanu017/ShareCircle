@@ -3,14 +3,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
-function App(){
+function App() {
 
-  return(
-    <>
-      <h1 className="text-4xl text-blue-600 font-bold">
-        ShareCircle
-      </h1>
-
+  return (
     <Routes>
 
       <Route path="/" element={<Login />} />
@@ -22,9 +17,7 @@ function App(){
       <Route path="/dashboard" element={<Dashboard />} />
 
     </Routes>
-    </>
-
-  )
+  );
 
 }
 
