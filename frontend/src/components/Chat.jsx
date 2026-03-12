@@ -78,44 +78,48 @@ function Chat({ connectionId, userId }) {
     }
   };
 
+  const formatTime = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
   return (
-    <div className="flex flex-col h-96 bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="flex flex-col h-96 bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden transition-colors duration-200">
       {/* Chat Header */}
-      <div className="bg-blue-600 text-white px-4 py-3 font-semibold">
+      <div className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-3 font-semibold shadow-sm">
         Chat
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
         {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-400">
+          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
             <p>No messages yet. Start the conversation!</p>
           </div>
         ) : (
           messages.map((msg) => {
-            const isCurrentUser = msg.sender === currentUserId;
+            const isCurrentUser = msg.sender?.toString() === currentUserId;
             return (
               <div
                 key={msg._id}
                 className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-xs px-4 py-2 rounded-xl ${
+                  className={`max-w-xs px-4 py-2 rounded-xl break-words transition-colors duration-200 ${
                     isCurrentUser
-                      ? "bg-blue-600 text-white rounded-br-none"
-                      : "bg-gray-300 text-gray-900 rounded-bl-none"
+                      ? "bg-blue-500 text-white rounded-br-none shadow-md"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none shadow-sm"
                   }`}
                 >
-                  <p className="text-sm">{msg.message}</p>
+                  <p className="text-sm break-words">{msg.message}</p>
                   <p
-                    className={`text-xs mt-1 ${
-                      isCurrentUser ? "text-blue-100" : "text-gray-600"
+                    className={`text-xs mt-1 opacity-70 ${
+                      isCurrentUser ? "text-blue-100" : "dark:text-gray-300 text-gray-600"
                     }`}
                   >
-                    {new Date(msg.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit"
-                    })}
+                    {formatTime(msg.createdAt)}
                   </p>
                 </div>
               </div>
@@ -126,18 +130,18 @@ function Chat({ connectionId, userId }) {
       </div>
 
       {/* Input Bar */}
-      <div className="border-t border-gray-200 bg-white p-4 flex gap-2">
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 flex gap-2 transition-colors duration-200">
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Type a message..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200"
         />
         <button
           onClick={sendMessage}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+          className="bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-2 rounded-full transition-colors duration-200 font-medium shadow-md hover:shadow-lg"
         >
           Send
         </button>
