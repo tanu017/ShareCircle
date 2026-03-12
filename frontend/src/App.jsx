@@ -6,6 +6,10 @@ import Dashboard from "./pages/Dashboard";
 function App(){
 
   return(
+    <>
+      <h1 className="text-4xl text-blue-600 font-bold">
+        ShareCircle
+      </h1>
 
     <Routes>
 
@@ -18,12 +22,10 @@ function App(){
       <Route path="/dashboard" element={<Dashboard />} />
 
     </Routes>
+    </>
 
   )
 
 }
-<h1 className="text-4xl text-blue-600 font-bold">
-  ShareCircle
-</h1>
 
 export default App;

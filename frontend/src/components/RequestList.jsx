@@ -43,45 +43,54 @@ function RequestList({ setConnectionId }) {
   };
 
   if (loading) {
-    return <h3>Loading requests...</h3>;
+    return (
+      <h3 className="text-gray-500">
+        Loading requests...
+      </h3>
+    );
   }
 
   return (
-    <div>
+  <div>
 
-      <h2>Available Requests</h2>
+    {requests.length === 0 && (
+      <p className="text-gray-500">
+        No requests found
+      </p>
+    )}
 
-      {requests.length === 0 && (
-        <p>No requests found</p>
-      )}
+    {requests.map(req => (
 
-      {requests.map(req => (
+      <div
+        key={req._id}
+        className="bg-white shadow-md rounded-lg p-4 mb-4 border"
+      >
 
-        <div
-          key={req._id}
-          style={{
-            border: "1px solid gray",
-            margin: "10px",
-            padding: "10px"
-          }}
+        <h3 className="text-lg font-semibold">
+          {req.title}
+        </h3>
+
+        <p className="text-gray-600 mt-1">
+          {req.description}
+        </p>
+
+        <p className="text-sm text-gray-500 mt-2">
+          📍 {req.location}
+        </p>
+
+        <button
+          className="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          onClick={() => helpRequest(req._id)}
         >
+          Help
+        </button>
 
-          <h3>{req.title}</h3>
+      </div>
 
-          <p>{req.description}</p>
+    ))}
 
-          <p><b>Location:</b> {req.location}</p>
-
-          <button onClick={() => helpRequest(req._id)}>
-            Help
-          </button>
-
-        </div>
-
-      ))}
-
-    </div>
-  );
+  </div>
+);
 }
 
 export default RequestList;
